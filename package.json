@@ -1,0 +1,18 @@
+{
+  "name": "slack-mcp",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Minimal OpenAI Responses API starter configured for GPT-5.5.",
+  "scripts": {
+    "start": "node src/index.js",
+    "ask": "node src/index.js",
+    "gpters:social": "node src/gpters-social-digest.js",
+    "gpters:social:watch": "node src/gpters-social-scheduler.js",
+    "gpters:social:install-task": "powershell -ExecutionPolicy Bypass -File scripts/register-gpters-social-task.ps1"
+  },
+  "dependencies": {
+    "dotenv": "^16.6.1",
+    "openai": "^6.7.0"
+  }
+}

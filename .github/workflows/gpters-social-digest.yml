@@ -1,0 +1,41 @@
+name: GPTers MCP Social Digest
+
+on:
+  schedule:
+    # 06:30 Asia/Seoul = 21:30 UTC on the previous day.
+    - cron: "30 21 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: gpters-mcp-social-digest
+  cancel-in-progress: false
+
+jobs:
+  post-digest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Post GPTers MCP digest to Slack
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_MODEL: ${{ vars.OPENAI_MODEL || 'gpt-5.5' }}
+          OPENAI_REASONING_EFFORT: ${{ vars.OPENAI_REASONING_EFFORT || 'medium' }}
+          FIRECRAWL_API_KEY: ${{ secrets.FIRECRAWL_API_KEY }}
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          SLACK_SOCIAL_CHANNEL_ID: ${{ secrets.SLACK_SOCIAL_CHANNEL_ID }}
+          GPTERS_DIGEST_LIMIT: ${{ vars.GPTERS_DIGEST_LIMIT || '10' }}
+          GPTERS_DIGEST_CANDIDATES: ${{ vars.GPTERS_DIGEST_CANDIDATES || '14' }}
+        run: npm run gpters:social
