@@ -28,6 +28,18 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Check required env
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          FIRECRAWL_API_KEY: ${{ secrets.FIRECRAWL_API_KEY }}
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          SLACK_SOCIAL_CHANNEL_ID: ${{ secrets.SLACK_SOCIAL_CHANNEL_ID }}
+        run: |
+          test -n "$OPENAI_API_KEY" || (echo "OPENAI_API_KEY missing" && exit 1)
+          test -n "$FIRECRAWL_API_KEY" || (echo "FIRECRAWL_API_KEY missing" && exit 1)
+          test -n "$SLACK_BOT_TOKEN" || (echo "SLACK_BOT_TOKEN missing" && exit 1)
+          test -n "$SLACK_SOCIAL_CHANNEL_ID" || (echo "SLACK_SOCIAL_CHANNEL_ID missing" && exit 1)
+
       - name: Post GPTers MCP digest to Slack
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
